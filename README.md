@@ -7,3 +7,6 @@
 - `testdb` - Database.
 - `sa` - User
 - `password` - Password.
+- `jdbc:h2:E:\Working\spring-demo-project\spring-batch-example-1\mem\testdb` - JDBC URL
+
+// TODO: add mq (error handle, processing)

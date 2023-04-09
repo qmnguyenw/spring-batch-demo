@@ -1,12 +1,15 @@
 package com.techprimers.springbatchexample1.config;
 
 import com.techprimers.springbatchexample1.model.User;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -15,13 +18,26 @@ import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
+@EnableScheduling
 @EnableBatchProcessing
 public class SpringBatchConfig {
+
+    @Autowired
+    JobLauncher jobLauncher;
+
+    @Autowired
+    Job job;
 
     @Bean
     public Job job(JobBuilderFactory jobBuilderFactory,
@@ -74,5 +90,22 @@ public class SpringBatchConfig {
 
         return defaultLineMapper;
     }
+
+//    @Scheduled(fixedDelay = 1000)
+//    public void scheduleFixedDelayTask() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+//        System.out.println(
+//                "Fixed delay task - " + System.currentTimeMillis() / 1000);
+//        Map<String, JobParameter> maps = new HashMap<>();
+//        maps.put("time", new JobParameter(System.currentTimeMillis()));
+//        JobParameters parameters = new JobParameters(maps);
+//        JobExecution jobExecution = jobLauncher.run(job, parameters);
+//
+//        System.out.println("JobExecution: " + jobExecution.getStatus());
+//
+//        System.out.println("Batch is Running...");
+//        while (jobExecution.isRunning()) {
+//            System.out.println("...");
+//        }
+//    }
 
 }
